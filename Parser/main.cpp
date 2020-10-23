@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "Parser.h"
+#include "WebPAnim.h"
 
 int main(int argc, char *argv[]) {
     FILE *inputFile = stdin;
@@ -26,6 +27,21 @@ int main(int argc, char *argv[]) {
                parser.animation.creationHour,
                parser.animation.creationMinute);
         std::cerr << "Creator: " << parser.animation.creatorName << std::endl;
+
+        WebPAnim anim;
+
+        for(auto & frame : parser.animation.frames){
+            anim.addFrame(
+                frame.data.data(),
+                frame.width,
+                frame.height,
+                frame.duration);
+        }
+
+        anim.generate(outputFile);
+        
+        //Generate WebP
+
     } catch (std::exception &e) {
         std::cerr << e.what();
     }
