@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repository
 {
-    
+
     public class DbRepository<TDbContext> : IDbRepository where TDbContext : DbContext
     {
         protected TDbContext DbContext;
@@ -19,12 +19,12 @@ namespace backend.Repository
             this.DbContext = context;
         }
 
-        public IQueryable<TEntity> GetAll<TEntity>() where TEntity : EntityBase
+        public IQueryable<TEntity> GetAll<TEntity>() where TEntity : class, IEntityBase
         {
             return DbContext.Set<TEntity>().AsQueryable();
         }
 
-        public async ValueTask<TEntity> FindAsync<TEntity>(long id) where TEntity : EntityBase
+        public async ValueTask<TEntity> FindAsync<TEntity>(long id) where TEntity : class, IEntityBase
         {
             return await DbContext.FindAsync<TEntity>(id);
         }
@@ -34,17 +34,17 @@ namespace backend.Repository
             return await DbContext.SaveChangesAsync();
         }
 
-        public void Add<TEntity>(TEntity entity) where TEntity : EntityBase
+        public void Add<TEntity>(TEntity entity) where TEntity : class, IEntityBase
         {
             DbContext.Set<TEntity>().Add(entity);
         }
 
-        public void Delete<TEntity>(TEntity entity) where TEntity : EntityBase
+        public void Delete<TEntity>(TEntity entity) where TEntity : class, IEntityBase
         {
             DbContext.Set<TEntity>().Remove(entity);
         }
 
-        public void Update<TEntity>(TEntity entity) where TEntity : EntityBase
+        public void Update<TEntity>(TEntity entity) where TEntity : class, IEntityBase
         {
             DbContext.Set<TEntity>().Attach(entity);
             DbContext.Entry(entity).State = EntityState.Modified;

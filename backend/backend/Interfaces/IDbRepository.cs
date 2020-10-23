@@ -6,18 +6,18 @@ using backend.Entities;
 
 namespace backend.Interfaces
 {
-    public interface IDbRepository 
+    public interface IDbRepository
     {
-        IQueryable<TEntity> GetAll<TEntity>() where TEntity : EntityBase;
+        IQueryable<TEntity> GetAll<TEntity>() where TEntity : class, IEntityBase;
 
-        ValueTask<TEntity> FindAsync<TEntity>(long id) where TEntity : EntityBase;
+        ValueTask<TEntity> FindAsync<TEntity>(long id) where TEntity : class, IEntityBase;
 
         Task<int> SaveAsync();
 
-        void Add<TEntity>(TEntity entity) where TEntity : EntityBase;
+        void Add<TEntity>(TEntity entity) where TEntity : class, IEntityBase;
 
-        void Delete<TEntity>(TEntity entity) where TEntity : EntityBase;
+        void Delete<TEntity>(TEntity entity) where TEntity : class, IEntityBase;
 
-        void Update<TEntity>(TEntity entity) where TEntity : EntityBase;
+        void Update<TEntity>(TEntity entity) where TEntity : class, IEntityBase;
     }
 }

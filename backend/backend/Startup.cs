@@ -9,6 +9,7 @@ using backend.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,10 @@ namespace backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddIdentity<Entities.User, IdentityRole<int>>()
+                .AddEntityFrameworkStores<WebstoreDbContext>()
+                .AddDefaultTokenProviders();
+
             //DbContext
             services.AddDbContext<WebstoreDbContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -35,7 +40,10 @@ namespace backend
             services.AddScoped<IWebstoreService, WebstoreService>();
             services.AddScoped<IDbRepository, DbRepository<WebstoreDbContext>>();
 
-            services.AddRouting();            services.AddControllers().AddNewtonsoftJson(options =>                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore            );
+            services.AddRouting();
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,7 +57,16 @@ namespace backend
             }
 
 
-            app.UseDefaultFiles();            app.UseStaticFiles();            app.UseHttpsRedirection();            app.UseAuthorization();            app.UseEndpoints(endpoints =>            {                endpoints.MapControllers();            });
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
+            app.UseHttpsRedirection();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }
