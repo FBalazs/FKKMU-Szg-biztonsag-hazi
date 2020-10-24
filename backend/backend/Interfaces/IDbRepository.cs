@@ -10,7 +10,7 @@ namespace backend.Interfaces
     {
         IQueryable<TEntity> GetAll<TEntity>() where TEntity : class, IEntityBase;
 
-        ValueTask<TEntity> FindAsync<TEntity>(long id) where TEntity : class, IEntityBase;
+        ValueTask<TEntity> FindAsync<TEntity>(int id) where TEntity : class, IEntityBase;
 
         Task<int> SaveAsync();
 

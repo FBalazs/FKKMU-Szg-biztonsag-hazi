@@ -24,7 +24,7 @@ namespace backend.Repository
             return DbContext.Set<TEntity>().AsQueryable();
         }
 
-        public async ValueTask<TEntity> FindAsync<TEntity>(long id) where TEntity : class, IEntityBase
+        public async ValueTask<TEntity> FindAsync<TEntity>(int id) where TEntity : class, IEntityBase
         {
             return await DbContext.FindAsync<TEntity>(id);
         }

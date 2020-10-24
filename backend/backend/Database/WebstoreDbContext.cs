@@ -8,6 +8,14 @@ namespace backend.Database
 {
     public class WebstoreDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
+        public DbSet<Comment> Comments { get; set; }
+
+        public DbSet<File> Files { get; set; }
+
+        public DbSet<Log> Logs { get; set; }
+
+        public DbSet<UserFile> UserFiles { get; set; }
+
         public WebstoreDbContext()
         {
 
