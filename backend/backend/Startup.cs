@@ -40,6 +40,10 @@ namespace backend
             // Service
             services.AddScoped<IWebstoreService, WebstoreService>();
             services.AddScoped<IDbRepository, DbRepository<WebstoreDbContext>>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IFileService, FileService>();
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<ILogService, LogService>();
 
             services.AddRouting();
             services.AddControllers().AddNewtonsoftJson(options =>
