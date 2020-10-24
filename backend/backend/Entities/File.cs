@@ -10,15 +10,9 @@ namespace backend.Entities
 
         public string Name { get; set; }
 
-        public string FileType { get; set; }
-
-        public byte[] FileData { get; set; }
+        public string FileUrl { get; set; }
 
         public DateTime Created { get; set; }
-
-        public int? UserId { get; set; }
-
-        public User User { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
 

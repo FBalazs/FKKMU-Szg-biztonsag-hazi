@@ -9,7 +9,9 @@ namespace backend.Entities
     {
         public int Id { get; set; }
 
-        public bool Owner { get; set; }
+        public bool Creator { get; set; }
+
+        public bool Downloaded { get; set; }
 
         public int UserId { get; set; }
 
