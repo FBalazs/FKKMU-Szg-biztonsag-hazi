@@ -34,7 +34,8 @@ namespace backend
                 .AddDefaultTokenProviders();
 
             //DbContext
-            services.AddDbContext<WebstoreDbContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            //services.AddDbContext<WebstoreDbContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<WebstoreDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("WebstoreDbContext")));
 
             // Service
             services.AddScoped<IWebstoreService, WebstoreService>();
