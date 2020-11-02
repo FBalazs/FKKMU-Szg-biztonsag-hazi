@@ -1,7 +1,7 @@
 #include <exception>
 #include <iostream>
 
-#include "Parser.h"
+#include "CaffParser.h"
 #include "WebPAnim.h"
 
 int main(int argc, char *argv[]) {
@@ -17,30 +17,22 @@ int main(int argc, char *argv[]) {
     }
 
     try {
-        Parser parser{inputFile, outputFile};
-        parser.process();
-
-        fprintf(stderr, "Creation date: %04d. %02d. %02d. %02d:%02d\n",
-               parser.animation.creationYear,
-               parser.animation.creationMonth,
-               parser.animation.creationDay,
-               parser.animation.creationHour,
-               parser.animation.creationMinute);
-        std::cerr << "Creator: " << parser.animation.creatorName << std::endl;
-
         WebPAnim anim;
 
-        for(auto & frame : parser.animation.frames){
-            anim.addFrame(
-                frame.data.data(),
-                frame.width,
-                frame.height,
-                frame.duration);
-        }
+        CaffParser caffParser{[&](auto header){},[&](auto credits){
+                fprintf(stderr, "Creation date: %04d. %02d. %02d. %02d:%02d\n",
+                    credits.creationYear,
+                    credits.creationMonth,
+                    credits.creationDay,
+                    credits.creationHour,
+                    credits.creationMinute);
+                std::cerr << "Creator: " << credits.creatorName << std::endl;
+            }, [&](auto frame){
+            anim.addFrame(frame.data.data(), frame.width, frame.height, frame.duration);
+        }};
+        caffParser.parse(inputFile);
 
         anim.generate(outputFile);
-        
-        //Generate WebP
 
     } catch (std::exception &e) {
         std::cerr << e.what();

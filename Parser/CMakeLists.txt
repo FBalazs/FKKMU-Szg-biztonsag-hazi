@@ -3,4 +3,5 @@ project(Parser)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Parser main.cpp Parser.cpp Parser.h)
+add_executable(Parser main.cpp CaffParser.h CaffParser.cpp WebPAnim.cpp WebPAnim.h)
+target_link_libraries(Parser webp webpmux) #-lwebp -lwebpmux
