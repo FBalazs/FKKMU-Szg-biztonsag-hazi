@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "CaffParser.h"
-#include "WebPAnim.h"
+#include "WebpEncoder.h"
 
 int main(int argc, char *argv[]) {
     FILE *inputFile = stdin;
@@ -17,9 +17,10 @@ int main(int argc, char *argv[]) {
     }
 
     try {
-        WebPAnim anim;
+        WebpEncoder webpEncoder{};
+        webpEncoder.init();
 
-        CaffParser caffParser{[&](auto header){},[&](auto credits){
+        CaffParser caffParser{[&](auto header){}, [&](auto credits){
                 fprintf(stderr, "Creation date: %04d. %02d. %02d. %02d:%02d\n",
                     credits.creationYear,
                     credits.creationMonth,
@@ -28,12 +29,11 @@ int main(int argc, char *argv[]) {
                     credits.creationMinute);
                 std::cerr << "Creator: " << credits.creatorName << std::endl;
             }, [&](auto frame){
-            anim.addFrame(frame.data.data(), frame.width, frame.height, frame.duration);
-        }};
+                webpEncoder.addFrame(frame.duration, frame.width, frame.height, frame.data.data());
+            }
+        };
         caffParser.parse(inputFile);
-
-        anim.generate(outputFile);
-
+        webpEncoder.writeToFile(outputFile);
     } catch (std::exception &e) {
         std::cerr << e.what();
     }

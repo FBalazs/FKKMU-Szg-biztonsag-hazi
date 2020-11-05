@@ -35,15 +35,15 @@ class CaffParser {
     const std::function<void(const CaffFrame&)> &frameConsumer;
 
     template<typename T>
-    void readData(FILE* file, T *pointer, size_t count, const char *errorText) const;
+    void readData(FILE *file, T *pointer, size_t count, const char *errorText) const;
 
-    void readHeader(FILE* file, uint64_t &remainingFrames, uint64_t length) const;
+    void readHeader(FILE *file, uint64_t &remainingFrames, uint64_t length) const;
 
-    void readCredits(FILE* file, uint64_t length) const;
+    void readCredits(FILE *file, uint64_t length) const;
 
-    void readFrame(FILE* file, uint64_t &remainingFrames, uint64_t length) const;
+    void readFrame(FILE *file, uint64_t &remainingFrames, uint64_t length) const;
 
-    void readBlock(FILE* file, uint64_t &remainingFrames) const;
+    void readBlock(FILE *file, uint64_t &remainingFrames) const;
 
 public:
     CaffParser(
@@ -51,7 +51,7 @@ public:
             const std::function<void(const CaffCredits&)> &creditsConsumer,
             const std::function<void(const CaffFrame&)> &frameConsumer) : headerConsumer{headerConsumer}, creditsConsumer{creditsConsumer}, frameConsumer{frameConsumer} {}
 
-    void parse(FILE* file) const;
+    void parse(FILE *file) const;
 };
 
 
