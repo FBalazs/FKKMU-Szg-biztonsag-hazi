@@ -6,6 +6,7 @@
 #
 
 TARGET = caffparser
+#CXX = /home/fbala/projects/AFL/afl-g++
 CXX = g++
 CPPFLAGS = -Wall
 INCLUDES = -I.
