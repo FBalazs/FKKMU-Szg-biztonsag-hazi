@@ -1,11 +1,12 @@
 #include "CaffParser.h"
 
 #include <stdexcept>
+#include <sstream>
 
 template<typename T>
 void CaffParser::readData(FILE *file, T *pointer, size_t count, const char *errorText) const {
     if (fread(pointer, sizeof(T), count, file) != count) {
-        throw std::runtime_error(errorText);
+        throw std::runtime_error{errorText};
     }
 }
 
@@ -42,7 +43,7 @@ void CaffParser::readCredits(FILE *file, uint64_t length) const {
 
 void CaffParser::readFrame(FILE *file, uint64_t &remainingFrames, uint64_t length) const {
     if (remainingFrames == 0) {
-        throw std::runtime_error("Invalid CAFF file. There should be no more animation blocks.");
+        throw std::runtime_error{"Invalid CAFF file. There should be no more animation blocks."};
     }
     --remainingFrames;
 
@@ -65,10 +66,28 @@ void CaffParser::readFrame(FILE *file, uint64_t &remainingFrames, uint64_t lengt
     uint64_t remainingByteCount = headerSize - 4 - 8 - 8 - 8 - 8;
     uint8_t remainingBytes[remainingByteCount];
     readData(file, remainingBytes, remainingByteCount, "Invalid CAFF file. Could not read CIFF caption and tags.");
-    // TODO parse caption and tags into frame fields
+
+    std::stringstream ss{};
+    uint64_t i = 0;
+    while (i < remainingByteCount && remainingBytes[i] != '\n') {
+        ss << (char)remainingBytes[i];
+        ++i;
+    }
+    frame.caption = ss.str();
+    ss = std::stringstream{};
+    ++i;
+    while (i < remainingByteCount) {
+        if (remainingBytes[i] == '\0') {
+            frame.tags.push_back(ss.str());
+            ss = std::stringstream{};
+        } else {
+            ss << remainingBytes[i];
+        }
+        ++i;
+    }
 
     if (contentSize != frame.width*frame.height*3) {
-        throw std::runtime_error("Invalid CAFF file. Invalid CIFF content size.");
+        throw std::runtime_error{"Invalid CAFF file. Invalid CIFF content size."};
     }
 
     frame.data.resize(contentSize);
@@ -93,7 +112,7 @@ void CaffParser::readBlock(FILE *file, uint64_t &remainingFrames) const {
             readFrame(file, remainingFrames, length);
             break;
         default:
-            throw std::runtime_error("Invalid CAFF file. Unknown block ID.");
+            throw std::runtime_error{"Invalid CAFF file. Unknown block ID."};
     }
 }
 
