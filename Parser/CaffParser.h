@@ -30,9 +30,9 @@ struct CaffFrame {
 
 class CaffParser {
 
-    const std::function<void(const CaffHeader&)> &headerConsumer;
-    const std::function<void(const CaffCredits&)> &creditsConsumer;
-    const std::function<void(const CaffFrame&)> &frameConsumer;
+    const std::function<void(const CaffHeader&)> headerConsumer;
+    const std::function<void(const CaffCredits&)> creditsConsumer;
+    const std::function<void(const CaffFrame&)> frameConsumer;
 
     template<typename T>
     void readData(FILE *file, T *pointer, size_t count, const char *errorText) const;
@@ -47,9 +47,9 @@ class CaffParser {
 
 public:
     CaffParser(
-            const std::function<void(const CaffHeader&)> &headerConsumer,
-            const std::function<void(const CaffCredits&)> &creditsConsumer,
-            const std::function<void(const CaffFrame&)> &frameConsumer) : headerConsumer{headerConsumer}, creditsConsumer{creditsConsumer}, frameConsumer{frameConsumer} {}
+            std::function<void(const CaffHeader&)> headerConsumer,
+            std::function<void(const CaffCredits&)> creditsConsumer,
+            std::function<void(const CaffFrame&)> frameConsumer) : headerConsumer{std::move(headerConsumer)}, creditsConsumer{std::move(creditsConsumer)}, frameConsumer{std::move(frameConsumer)} {}
 
     void parse(FILE *file) const;
 };
