@@ -8,7 +8,7 @@
 TARGET = caffparser
 #CXX = /home/fbala/projects/AFL/afl-g++
 CXX = g++
-CPPFLAGS = -Wall
+CPPFLAGS = -Wall -g
 INCLUDES = -I.
 SRCS = main.cpp CaffParser.cpp WebpEncoder.cpp
 OBJS = $(SRCS:.cpp=.o)

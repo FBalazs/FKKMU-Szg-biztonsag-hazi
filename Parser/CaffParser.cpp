@@ -34,9 +34,10 @@ void CaffParser::readCredits(FILE *file, uint64_t length) const {
 
     uint64_t creatorNameLength;
     readData(file, &creatorNameLength, 1, "Invalid CAFF file. Could not read creator length.");
-    uint8_t tempCreator[creatorNameLength];
-    readData(file, tempCreator, creatorNameLength, "Invalid CAFF file. Could not read creator.");
-    caffCredits.creatorName = std::string{tempCreator, tempCreator + creatorNameLength};
+    std::vector<uint8_t> creatorNameBytes;
+    creatorNameBytes.resize(creatorNameLength);
+    readData(file, &creatorNameBytes[0], creatorNameLength, "Invalid CAFF file. Could not read creator.");
+    caffCredits.creatorName = std::string{creatorNameBytes.begin(), creatorNameBytes.end()};
 
     creditsConsumer(caffCredits);
 }
@@ -63,9 +64,11 @@ void CaffParser::readFrame(FILE *file, uint64_t &remainingFrames, uint64_t lengt
     readData(file, &frame.width, 1, "Invalid CAFF file. Could not read CIFF width.");
     readData(file, &frame.height, 1, "Invalid CAFF file. Could not read CIFF height.");
 
-    uint64_t remainingByteCount = headerSize - 4 - 8 - 8 - 8 - 8;
-    uint8_t remainingBytes[remainingByteCount];
-    readData(file, remainingBytes, remainingByteCount, "Invalid CAFF file. Could not read CIFF caption and tags.");
+    const uint64_t remainingByteCount = headerSize - 4 - 8 - 8 - 8 - 8;
+
+    std::vector<uint8_t> remainingBytes;
+    remainingBytes.resize(remainingByteCount, 0);
+    readData(file, &remainingBytes[0], remainingByteCount, "Invalid CAFF file. Could not read CIFF caption and tags.");
 
     std::stringstream ss{};
     uint64_t i = 0;

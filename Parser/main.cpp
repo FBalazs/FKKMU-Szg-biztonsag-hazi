@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
         WebpEncoder webpEncoder{};
         webpEncoder.init();
 
-        CaffParser caffParser{[&](auto header) {}, [&](auto credits) {
+        CaffParser caffParser{[&](const auto &header) {}, [&](const auto &credits) {
                 if (metaFile != nullptr) {
                     fprintf(metaFile, "Creation date: %04d. %02d. %02d. %02d:%02d\n",
                             credits.creationYear,
@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
                             credits.creationMinute);
                     fprintf(metaFile, "Creator: %s\n", credits.creatorName.c_str());
                 }
-            }, [&](auto frame) {
+            }, [&](const auto &frame) {
                 if (metaFile != nullptr) {
                     fprintf(metaFile, "Frame caption: %s\n", frame.caption.c_str());
                     fprintf(metaFile, "Frame tags:\n");
