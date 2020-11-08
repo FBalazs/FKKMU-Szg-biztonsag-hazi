@@ -3,6 +3,8 @@
 
 #include <functional>
 #include <vector>
+#include <stdint.h>
+#include <string>
 
 struct CaffHeader {
     uint64_t frameCount = 0;
