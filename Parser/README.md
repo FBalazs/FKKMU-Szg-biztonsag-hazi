@@ -1,6 +1,12 @@
 # caffparser
 
-The parser can convert .caff files into .webp files. Usage:
+The parser can convert .caff files into .webp files.
+
+## Compile
+
+You can compile the software using the command `make clean all`.
+
+## Usage
 
 `caffparser [-i <path-to-input-file>] [-o <path-to-output-file>] [-m <path-to-input-metafile> | -pm]`
 
