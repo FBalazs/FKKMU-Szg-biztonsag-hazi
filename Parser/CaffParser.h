@@ -3,7 +3,7 @@
 
 #include <functional>
 #include <vector>
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 
 struct CaffHeader {
