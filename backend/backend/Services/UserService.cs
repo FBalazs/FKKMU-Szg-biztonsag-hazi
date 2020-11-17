@@ -1,10 +1,18 @@
 ﻿using backend.Entities;
+using backend.Exceptions;
+using backend.Helpers;
 using backend.Interfaces;
+using backend.Models;
 using backend.Repository;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace backend.Services
@@ -17,27 +25,123 @@ namespace backend.Services
 
         private readonly IDbRepository _repository;
 
-        public UserService(UserManager<User> userManager, RoleManager<IdentityRole<int>> roleManager, IDbRepository repository)
+        private readonly AppSettings _appSettings;
+
+        public UserService(UserManager<User> userManager, RoleManager<IdentityRole<int>> roleManager, IDbRepository repository, IOptions<AppSettings> appSettings)
         {
             this._userManager = userManager;
             this._roleManager = roleManager;
             this._repository = repository;
+            this._appSettings = appSettings.Value;
         }
 
-        public void Login(User user, string password)
+        public async Task<User> GetByEmail(string email)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByEmailAsync(email);
+
+            return user;
         }
 
-        public void Register(User user)
+        public async Task<User> GetById(int id)
         {
-            throw new NotImplementedException();
+            var user = await _repository.FindAsync<User>(id);
+
+            return user;
+        }
+
+        public IEnumerable<User> GetByUsers()
+        {
+            var users = _userManager.Users.ToList();
+
+            return users;
+        }
+
+        public async Task<UserDto> Login(string email, string password)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var result = await _userManager.CheckPasswordAsync(user, password);
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            if(roles == null)
+            {
+                return null;
+            }
+
+            if (result)
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new Claim[]
+                    {
+                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.Role, roles.FirstOrDefault())
+                    }),
+                    Expires = DateTime.UtcNow.AddDays(7),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                var userToken = tokenHandler.WriteToken(token);
+
+                var userDto = new UserDto { Id = user.Id, Email = user.Email, Role = roles.FirstOrDefault(), Token = userToken };
+
+                return userDto;
+            }
+
+            return null;
+        }
+
+        public async Task<IdentityResult> Register(User user, string password)
+        {
+            if (String.IsNullOrEmpty(password))
+            {
+                throw new AppException("Password is required");
+            }
+
+            var result = await _userManager.CreateAsync(user, password);
+
+            if (result.Succeeded)
+            {
+                var addToRole = await _userManager.AddToRoleAsync(user, Roles.Roles.Customer);
+            }
+
+            return result;
         }
 
         //Change user Role
-        public void Update(User user)
+        public async Task<User> Update(int id, string role)
         {
-            throw new NotImplementedException();
+            var user = await _repository.FindAsync<User>(id);
+
+            if(user == null)
+            {
+                return null;
+            }
+
+            var roleExists = await _roleManager.RoleExistsAsync(role);
+
+            if (roleExists)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+
+                await _userManager.RemoveFromRolesAsync(user, roles);
+
+                await _userManager.AddToRoleAsync(user, role);
+
+                return user;
+            } 
+            else
+            {
+                return null;
+            }
         }
     }
 }

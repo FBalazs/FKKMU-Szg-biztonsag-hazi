@@ -1,4 +1,6 @@
 ﻿using backend.Entities;
+using backend.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +10,16 @@ namespace backend.Interfaces
 {
     public interface IUserService
     {
-        public void Register(User user);
+        Task<IdentityResult> Register(User user, string password);
 
-        public void Login(User user, string password);
+        Task<UserDto> Login(string email, string password);
 
-        public void Update(User user);
+        Task<User> Update(int id, string role);
+
+        Task<User> GetById(int id);
+
+        Task<User> GetByEmail(string email);
+
+        IEnumerable<User> GetByUsers();
     }
 }
