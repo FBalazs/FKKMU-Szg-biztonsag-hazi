@@ -16,14 +16,29 @@ namespace backend.Services
             this._repository = repository;
         }
 
-        public Comment DeleteComment(int id)
+        public List<Comment> GetAllComment(int animation_id)
         {
-            throw new NotImplementedException();
+            List<Comment> comments = _repository.GetAll<Comment>().ToList();
+
+            List<Comment> commentsByAnimationId = comments.Where(x => x.FileId == animation_id).ToList();
+
+            return commentsByAnimationId;
         }
 
-        public void SaveComment(string message)
+        public async Task<int> DeleteComment(int id)
         {
-            throw new NotImplementedException();
+            var comment = await _repository.FindAsync<Comment>(id);
+
+            _repository.Delete(comment);
+
+            return 1;
+        }
+
+        public Task<int> SaveComment(Comment comment)
+        {
+            _repository.Add(comment);
+
+            return Task.FromResult(1);
         }
     }
 }

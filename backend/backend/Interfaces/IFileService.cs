@@ -8,10 +8,12 @@ namespace backend.Interfaces
 {
     public interface IFileService
     {
-        public void UploadFile(File file);
+        public List<byte[]> GetAll();
 
-        public File DownloadFile(String fileName);
+        public Task<int> UploadFile(byte[] file);
 
-        public int DeleteFile(int it);
+        public Task<byte[]> DownloadFile(int id);
+
+        public Task<int> DeleteFile(int id);
     }
 }

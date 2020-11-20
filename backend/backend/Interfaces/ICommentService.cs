@@ -8,8 +8,10 @@ namespace backend.Interfaces
 {
     public interface ICommentService
     {
-        public void SaveComment(String message);
+        public List<Comment> GetAllComment(int animation_id);
 
-        public Comment DeleteComment(int id);
+        public Task<int> SaveComment(Comment comment);
+
+        public Task<int> DeleteComment(int id);
     }
 }
