@@ -7,6 +7,8 @@ namespace backend.Entities
 {
     public class User : IdentityUser<int>, IEntityBase
     {
+        public string Role { get; set; }
+
         public ICollection<UserFile> Files { get; set; }
 
         public ICollection<Comment> Comments { get; set; }

@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using backend.Entities;
+using backend.Exceptions;
 using backend.Interfaces;
+using backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -11,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace backend.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -18,6 +22,30 @@ namespace backend.Controllers
         public UsersController(IUserService userService)
         {
             _userService = userService;
+        }
+
+        [Authorize(Roles = Roles.Roles.Admin)]
+        [HttpGet]
+        public IActionResult GetUsers()
+        {
+            var users = _userService.GetAll();
+
+            return Ok(users);
+        }
+
+        [Authorize(Roles = Roles.Roles.Admin)]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUser(int id)
+        {
+            var user = await _userService.GetById(id);
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            var userListDto = new UserListDto { Id = user.Id, Email = user.Email, Role = user.Role };
+
+            return Ok(userListDto);
         }
 
         [HttpPost("login")]
@@ -52,13 +80,25 @@ namespace backend.Controllers
                 }
                 else
                 {
-                    return BadRequest();
+                    return BadRequest(new { error = "The password should be at least 6 long and contain capital letters, a number and a special character." });
                 }
             }
-            catch (Exception ex)
+            catch (AppException ex)
             {
                 return BadRequest(new { error = ex.Message });
             }
+        }
+
+        [Authorize(Roles = Roles.Roles.Admin)]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] string role)
+        {
+            var user = await _userService.Update(id, role);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return NoContent();
         }
     }
 }

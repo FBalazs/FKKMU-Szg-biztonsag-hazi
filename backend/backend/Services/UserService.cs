@@ -49,9 +49,14 @@ namespace backend.Services
             return user;
         }
 
-        public IEnumerable<User> GetByUsers()
+        public IEnumerable<UserListDto> GetAll()
         {
-            var users = _userManager.Users.ToList();
+            var users = _repository.GetAll<User>().Select(u => new UserListDto 
+            {
+                Id = u.Id,
+                Email = u.Email,
+                Role = u.Role
+            }).ToList();
 
             return users;
         }
@@ -83,7 +88,7 @@ namespace backend.Services
                     Subject = new ClaimsIdentity(new Claim[]
                     {
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
-                    new Claim(ClaimTypes.Role, roles.FirstOrDefault())
+                    new Claim(ClaimTypes.Role, user.Role)
                     }),
                     Expires = DateTime.UtcNow.AddDays(7),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -91,7 +96,7 @@ namespace backend.Services
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var userToken = tokenHandler.WriteToken(token);
 
-                var userDto = new UserDto { Id = user.Id, Email = user.Email, Role = roles.FirstOrDefault(), Token = userToken };
+                var userDto = new UserDto { Id = user.Id, Email = user.Email, Role = user.Role, Token = userToken };
 
                 return userDto;
             }
@@ -111,6 +116,12 @@ namespace backend.Services
             if (result.Succeeded)
             {
                 var addToRole = await _userManager.AddToRoleAsync(user, Roles.Roles.Customer);
+
+                if (addToRole.Succeeded)
+                {
+                    user.Role = Roles.Roles.Customer;
+                    await _userManager.UpdateAsync(user);
+                }
             }
 
             return result;
@@ -135,6 +146,9 @@ namespace backend.Services
                 await _userManager.RemoveFromRolesAsync(user, roles);
 
                 await _userManager.AddToRoleAsync(user, role);
+
+                user.Role = role;
+                await _userManager.UpdateAsync(user);
 
                 return user;
             } 

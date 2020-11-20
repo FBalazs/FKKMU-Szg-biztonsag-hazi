@@ -20,6 +20,6 @@ namespace backend.Interfaces
 
         Task<User> GetByEmail(string email);
 
-        IEnumerable<User> GetByUsers();
+        IEnumerable<UserListDto> GetAll();
     }
 }
