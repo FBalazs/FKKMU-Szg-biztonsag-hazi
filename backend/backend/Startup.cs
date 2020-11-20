@@ -33,6 +33,8 @@ namespace backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddCors();
+
             services.AddIdentity<Entities.User, IdentityRole<int>>()
                 .AddEntityFrameworkStores<WebstoreDbContext>()
                 .AddDefaultTokenProviders();
@@ -48,6 +50,9 @@ namespace backend
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<ILogService, LogService>();
+
+            services.AddScoped<IRoleSeedService, RoleSeedService>();
+            services.AddScoped<IUserSeedService, UserSeedService>();
 
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
@@ -93,6 +98,11 @@ namespace backend
             app.UseStaticFiles();
 
             app.UseHttpsRedirection();
+
+            /*app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());*/
 
             app.UseAuthentication();
             app.UseAuthorization();
