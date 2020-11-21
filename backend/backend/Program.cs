@@ -16,19 +16,19 @@ namespace backend
 
         //For database Migration purposes, Add-Migration, Update-database, than run backend with async Main to migrate the Roles and Admin
 
-        /*public static async Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = await (CreateHostBuilder(args)
                 .Build()
                 .MigrateDatabase<WebstoreDbContext>());
 
             host.Run();
-        }*/
+        }
 
-        public static void Main(string[] args)
+        /*public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
-        }
+        }*/
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)

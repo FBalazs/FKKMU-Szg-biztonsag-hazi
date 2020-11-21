@@ -49,14 +49,14 @@ namespace backend.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Authenticate([FromBody] string email, string password)
+        public async Task<IActionResult> Authenticate([FromBody] LoginDto loginDto)
         {
-            if (String.IsNullOrEmpty(email) || String.IsNullOrEmpty(password))
+            if (String.IsNullOrEmpty(loginDto.Email) || String.IsNullOrEmpty(loginDto.Password))
             {
                 return BadRequest(new { error = "Username or password is empty" });
             }
 
-            var userDto = await _userService.Login(email, password);
+            var userDto = await _userService.Login(loginDto.Email, loginDto.Password);
 
             if (userDto == null)
             {
@@ -67,13 +67,13 @@ namespace backend.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] string email, string password)
+        public async Task<IActionResult> Register([FromBody] LoginDto loginDto)
         {
-            var user = new User { UserName = email, Email = email };
+            var user = new User { UserName = loginDto.Email, Email = loginDto.Email };
 
             try
             {
-                var result = await _userService.Register(user, password);
+                var result = await _userService.Register(user, loginDto.Password);
                 if (result.Succeeded)
                 {
                     return Ok();

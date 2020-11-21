@@ -33,7 +33,7 @@ namespace backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddCors();
+            services.AddCors();
 
             services.AddIdentity<Entities.User, IdentityRole<int>>()
                 .AddEntityFrameworkStores<WebstoreDbContext>()
@@ -99,10 +99,10 @@ namespace backend
 
             app.UseHttpsRedirection();
 
-            /*app.UseCors(x => x
+            app.UseCors(x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
-                .AllowAnyHeader());*/
+                .AllowAnyHeader());
 
             app.UseAuthentication();
             app.UseAuthorization();
