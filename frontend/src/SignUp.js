@@ -36,8 +36,6 @@ class SignUp extends React.Component {
    constructor(props) {
      super(props);
      this.state = {
-       firstName: '',
-       lastName: '',
        email: '',
        password: '',
        confirm_password: '',
@@ -69,14 +67,15 @@ class SignUp extends React.Component {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(this.state)
+        body: JSON.stringify({email: this.state.email, password: this.state.password})       
       };
 
-      fetch('https://jsonplaceholder.typicode.com/posts', requestOptions)
+      fetch('https://localhost:8080/api/users/register', requestOptions)
         .then(response => response.json())
         .then(data => {console.log(data)});
+        
+        window.location = "/";
 
-      console.log(this.state)
       event.preventDefault();
     }
   
@@ -95,41 +94,8 @@ class SignUp extends React.Component {
         </Typography>
         <form className={classes.form} onSubmit={this.handleSubmit} noValidate>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="fname"
-                name="firstName"
-                variant="outlined"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                autoFocus
-                value = {
-                  this.state.value
-                }
-                onChange = {
-                  this.handleChange
-                }
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="lname"
-                value = {
-                  this.state.value
-                }
-                onChange = {
-                  this.handleChange
-                }
-              />
-            </Grid>
+            
+            
             <Grid item xs={12}>
               <TextField
                 variant="outlined"

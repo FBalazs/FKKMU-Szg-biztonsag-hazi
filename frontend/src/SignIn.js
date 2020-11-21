@@ -48,6 +48,8 @@ class SignIn extends React.Component {
     });
   }
 
+  
+
   handleSubmit(event) {
     const requestOptions = {
       method: 'POST',
@@ -56,15 +58,24 @@ class SignIn extends React.Component {
       },
       body: JSON.stringify(this.state)
     };
+    
 
-    window.location = "/album";
-
-    fetch('https://jsonplaceholder.typicode.com/posts', requestOptions)
-      .then(response => response.json())
-      .then(data => { console.log(data) });
-
-    console.log(this.state)
-    event.preventDefault();
+    //window.location = "/album";
+    console.log(requestOptions)
+    fetch('https://localhost:8080/api/users/login', requestOptions)
+      .then(response => {
+        if (response.status===200){
+          window.location = "/album";
+           
+        } 
+        else {
+          console.log(response.json())
+        }
+      }
+      );
+      //response.json())
+      //.then(data => { console.log(data) }, );
+      event.preventDefault();
   }
 
   render(){
@@ -122,6 +133,7 @@ class SignIn extends React.Component {
               variant="contained"
               color="primary"
               className={classes.submit}
+              
             >
               Sign In
             </Button>
