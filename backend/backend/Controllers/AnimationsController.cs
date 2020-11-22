@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using backend.Entities;
 using backend.Interfaces;
+using backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -14,45 +16,59 @@ namespace backend.Controllers
     public class AnimationsController : ControllerBase
     {
         private readonly IFileService _animationService;
+        private readonly ILogService _logService;
 
-        public AnimationsController(IFileService animationService)
+        public AnimationsController(IFileService animationService, ILogService logService)
         {
             _animationService = animationService;
+            _logService = logService;
         }
 
+        [Authorize(Roles = Roles.Roles.Customer + "," + Roles.Roles.Admin)]
         [HttpGet]
         public IActionResult getAllAnimation()
         {
             var result = _animationService.GetAll();
 
+            _logService.Logger(HttpContext.User.Identity.Name, "Összes animáció lekérése", "File");
+
             return Ok(result);
         }
 
+        [Authorize(Roles = Roles.Roles.Customer + "," + Roles.Roles.Admin)]
         [HttpPost]
-        public async Task<IActionResult> uploadAnimation([FromBody] byte[] file)
+        public async Task<IActionResult> uploadAnimation([FromBody] FileDto file)
         {
-            await _animationService.UploadFile(file);
+            var result = await _animationService.UploadFile(file.fileBytes);
+
+            _logService.Logger(HttpContext.User.Identity.Name, "Fájl feltöltése", "File", result.ToString());
 
             return Ok();
         }
 
-        [Route("/{animation_id}")]
-        [HttpGet]
+        [Authorize(Roles = Roles.Roles.Customer + "," + Roles.Roles.Admin)]
+        [HttpGet("{animation_id}")]
         public async Task<IActionResult> downloadAnimation(int animation_id)
         {
             byte[] byteArray = await _animationService.DownloadFile(animation_id);
 
             if (byteArray != null)
-                return new FileContentResult(byteArray, "application/octet-stream");
+            {
+                _logService.Logger(HttpContext.User.Identity.Name, "Fájl letöltése", "File", animation_id.ToString());
+                return Ok(byteArray);
+            }
 
             return BadRequest(new { error = "File not found" });
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> deleteAnimation([FromBody] int animation_id)
+        [Authorize(Roles = Roles.Roles.Admin)]
+        [HttpDelete("{animation_id}")]
+        public async Task<IActionResult> deleteAnimation(int animation_id)
         {
 
             await _animationService.DeleteFile(animation_id);
+
+            _logService.Logger(HttpContext.User.Identity.Name, "Fájl törlése", "File", animation_id.ToString());
 
             return Ok();
         }

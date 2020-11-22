@@ -7,5 +7,6 @@ namespace backend.Interfaces
 {
     public interface ILogService
     {
+        public void Logger(string userId, string activity, string dbName, string id = "");
     }
 }

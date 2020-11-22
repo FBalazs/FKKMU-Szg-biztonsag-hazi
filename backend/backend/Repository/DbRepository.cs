@@ -37,17 +37,20 @@ namespace backend.Repository
         public void Add<TEntity>(TEntity entity) where TEntity : class, IEntityBase
         {
             DbContext.Set<TEntity>().Add(entity);
+            DbContext.SaveChanges();
         }
 
         public void Delete<TEntity>(TEntity entity) where TEntity : class, IEntityBase
         {
             DbContext.Set<TEntity>().Remove(entity);
+            DbContext.SaveChanges();
         }
 
         public void Update<TEntity>(TEntity entity) where TEntity : class, IEntityBase
         {
             DbContext.Set<TEntity>().Attach(entity);
             DbContext.Entry(entity).State = EntityState.Modified;
+            DbContext.SaveChanges();
         }
     }
 }

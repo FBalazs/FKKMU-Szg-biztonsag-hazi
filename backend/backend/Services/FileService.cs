@@ -13,6 +13,7 @@ namespace backend.Services
         private readonly IDbRepository _repository;
 
         String caffFilesRootPath = System.IO.Directory.GetCurrentDirectory() + @"\Caffs\";
+        String webpFilesRootPath = System.IO.Directory.GetCurrentDirectory() + @"\Webps\";
 
         public FileService(IDbRepository repository)
         {
@@ -24,22 +25,24 @@ namespace backend.Services
             var result = _repository.GetAll<File>().ToList();
             List<byte[]> files = new List<byte[]>();
 
-            foreach (File f in result)
+            foreach (File file in result)
             {
+                string outputPath = webpFilesRootPath + file.Name + @".webp";
+
                 //Parser-rel generáljuk
                 Process process = new Process();
                 process.StartInfo.FileName = "parser.exe";
-                process.StartInfo.Arguments = f.FileUrl; // Note the /c command (*)
+                process.StartInfo.Arguments = "-i " + file.FileUrl + " -o " + outputPath; // Note the /c command (*)
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.RedirectStandardOutput = true;
                 process.StartInfo.RedirectStandardError = true;
                 process.Start();
                 //* Read the output (or the error)
-                string output = process.StandardOutput.ReadToEnd();
+                //string output = process.StandardOutput.ReadToEnd();
                 //string err = process.StandardError.ReadToEnd();
                 process.WaitForExit();
 
-                files.Add(System.IO.File.ReadAllBytes(output));
+                files.Add(System.IO.File.ReadAllBytes(outputPath));
             }
 
 
@@ -83,7 +86,8 @@ namespace backend.Services
             File file_record = new File();
             file_record.FileUrl = path;
             file_record.Name = fileName;
-            file_record.Id = _repository.GetAll<File>().Count();
+            int id = _repository.GetAll<File>().Count() + 1;
+            file_record.Id = id;
             file_record.Created = DateTime.Now;
 
             _repository.Add<File>(file_record);
@@ -91,7 +95,7 @@ namespace backend.Services
             //fájl mentése
             System.IO.File.WriteAllBytes(path, file);
 
-            return Task.FromResult(1);
+            return Task.FromResult(id);
         }
     }
 }

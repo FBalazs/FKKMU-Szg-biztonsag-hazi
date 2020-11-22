@@ -18,10 +18,12 @@ namespace backend.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly ILogService _logService;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService, ILogService logService)
         {
             _userService = userService;
+            _logService = logService;
         }
 
         [Authorize(Roles = Roles.Roles.Admin)]
@@ -29,6 +31,8 @@ namespace backend.Controllers
         public IActionResult GetUsers()
         {
             var users = _userService.GetAll();
+
+            _logService.Logger(HttpContext.User.Identity.Name, "Összes felhasználó lekérése", "User");
 
             return Ok(users);
         }
@@ -38,7 +42,10 @@ namespace backend.Controllers
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _userService.GetById(id);
-            if(user == null)
+
+            _logService.Logger(HttpContext.User.Identity.Name, "Megadott id-hez tartozó felhasználó lekérése", "User", id.ToString());
+
+            if (user == null)
             {
                 return NotFound();
             }
@@ -58,6 +65,8 @@ namespace backend.Controllers
 
             var userDto = await _userService.Login(loginDto.Email, loginDto.Password);
 
+            _logService.Logger(HttpContext.User.Identity.Name, "Felhasználó bejelentkezése", "User", loginDto.Email.ToString());
+
             if (userDto == null)
             {
                 return BadRequest(new { error = "Username or password is incorrect" });
@@ -76,6 +85,7 @@ namespace backend.Controllers
                 var result = await _userService.Register(user, loginDto.Password);
                 if (result.Succeeded)
                 {
+                    _logService.Logger(HttpContext.User.Identity.Name, "Felhasználó regisztrálása", "User", loginDto.Email.ToString());
                     return Ok();
                 }
                 else
@@ -94,6 +104,9 @@ namespace backend.Controllers
         public async Task<IActionResult> Put(int id, [FromBody] UpdateRoleDto upadateRoleDto)
         {
             var user = await _userService.Update(id, upadateRoleDto.Role);
+
+            _logService.Logger(HttpContext.User.Identity.Name, "Felhasználó szerepkörének frissítése", "User", id.ToString());
+
             if (user == null)
             {
                 return NotFound();
