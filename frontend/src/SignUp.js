@@ -71,11 +71,15 @@ class SignUp extends React.Component {
       };
 
       fetch('https://localhost:8080/api/users/register', requestOptions)
-        .then(response => response.json())
-        .then(data => {console.log(data)});
-        
-        window.location = "/";
-
+        .then(response => {
+            if (response.status===200){
+              window.location = "/";
+              response.json().then(data =>{ console.log(data) })
+            } else {
+                console.log(response)
+              }
+        })
+                //.then(data => {console.log(data)});
       event.preventDefault();
     }
   

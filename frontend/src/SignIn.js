@@ -59,22 +59,17 @@ class SignIn extends React.Component {
       body: JSON.stringify(this.state)
     };
     
-
-    //window.location = "/album";
-    console.log(requestOptions)
     fetch('https://localhost:8080/api/users/login', requestOptions)
       .then(response => {
         if (response.status===200){
           window.location = "/album";
-           
+          response.json().then(data =>{ console.log(data.token) })
         } 
         else {
-          console.log(response.json())
+          window.location = "/"
+          console.log(response)
         }
-      }
-      );
-      //response.json())
-      //.then(data => { console.log(data) }, );
+      });
       event.preventDefault();
   }
 

@@ -11,7 +11,7 @@ class NavBar extends React.Component {
                 <Toolbar container="true" align-content="space-between">
                     
                     <Box display='flex' flexGrow={1}>
-                        <Button color="inherit" href="/">Home </Button>
+                        <Button color="inherit" href="/Album">Home </Button>
                     </Box>
                     <Button color="inherit" href="/">Log Out </Button>
                 </Toolbar>
