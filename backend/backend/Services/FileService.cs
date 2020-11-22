@@ -13,38 +13,39 @@ namespace backend.Services
         private readonly IDbRepository _repository;
 
         String caffFilesRootPath = System.IO.Directory.GetCurrentDirectory() + @"\Caffs\";
-        String webpFilesRootPath = System.IO.Directory.GetCurrentDirectory() + @"\Webps\";
+        String webpFilesRootPath = System.IO.Directory.GetCurrentDirectory() + @"\wwwroot\images\";
 
         public FileService(IDbRepository repository)
         {
             this._repository = repository;
         }
 
-        public List<byte[]> GetAll()
+        public List<string> GetAll()
         {
             var result = _repository.GetAll<File>().ToList();
-            List<byte[]> files = new List<byte[]>();
+            List<string> files = new List<string>();
 
             foreach (File file in result)
             {
                 string outputPath = webpFilesRootPath + file.Name + @".webp";
 
-                //Parser-rel generáljuk
-                Process process = new Process();
-                process.StartInfo.FileName = "parser.exe";
-                process.StartInfo.Arguments = "-i " + file.FileUrl + " -o " + outputPath; // Note the /c command (*)
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.RedirectStandardError = true;
-                process.Start();
-                //* Read the output (or the error)
-                //string output = process.StandardOutput.ReadToEnd();
-                //string err = process.StandardError.ReadToEnd();
-                process.WaitForExit();
+                //ha létezik a fájl, nem generáljuk újra
+                if (!System.IO.File.Exists(outputPath))
+                {
+                    //Parser-rel generáljuk
+                    Process process = new Process();
+                    process.StartInfo.FileName = "parser.exe";
+                    process.StartInfo.Arguments = "-i " + file.FileUrl + " -o " + outputPath; // Note the /c command (*)
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.StartInfo.RedirectStandardError = true;
+                    process.Start();
 
-                files.Add(System.IO.File.ReadAllBytes(outputPath));
+                    process.WaitForExit();
+                }
+
+                files.Add(outputPath);
             }
-
 
             return files;
         }

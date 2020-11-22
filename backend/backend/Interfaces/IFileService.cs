@@ -8,7 +8,7 @@ namespace backend.Interfaces
 {
     public interface IFileService
     {
-        public List<byte[]> GetAll();
+        public List<string> GetAll();
 
         public Task<int> UploadFile(byte[] file);
 

@@ -7,6 +7,7 @@
   <ItemGroup>
     <Folder Include="Repository\" />
     <Folder Include="Database\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.9" />
