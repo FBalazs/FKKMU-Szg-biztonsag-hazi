@@ -44,7 +44,7 @@ namespace backend.Services
                     process.WaitForExit();
                 }
 
-                files.Add(outputPath);
+                files.Add(@"https://localhost:8080/images/" + file.Name + @".webp");
             }
 
             return files;
