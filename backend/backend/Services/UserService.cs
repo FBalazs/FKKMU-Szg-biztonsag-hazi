@@ -157,5 +157,26 @@ namespace backend.Services
                 return null;
             }
         }
+
+        public async Task<User> UpdatePassword(int id, string currentPassword, string password)
+        {
+            var user = await _repository.FindAsync<User>(id);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, currentPassword, password);
+
+            if (result.Succeeded)
+            {
+                return user;
+            }
+            else
+            {
+                throw new AppException(result.Errors.FirstOrDefault().Description);
+            }
+        }
     }
 }

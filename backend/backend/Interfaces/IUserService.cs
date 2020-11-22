@@ -16,6 +16,8 @@ namespace backend.Interfaces
 
         Task<User> Update(int id, string role);
 
+        Task<User> UpdatePassword(int id, string currentPassword, string password);
+
         Task<User> GetById(int id);
 
         Task<User> GetByEmail(string email);

@@ -91,13 +91,44 @@ namespace backend.Controllers
 
         [Authorize(Roles = Roles.Roles.Admin)]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] string role)
+        public async Task<IActionResult> Put(int id, [FromBody] UpdateRoleDto upadateRoleDto)
         {
-            var user = await _userService.Update(id, role);
+            var user = await _userService.Update(id, upadateRoleDto.Role);
             if (user == null)
             {
                 return NotFound();
             }
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpPut("resetpassword/{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] UpdatePasswordDto updatePasswordDto)
+        {
+            var currentUserId = int.Parse(HttpContext.User.Identity.Name);
+            if (currentUserId != id)
+            {
+                return Unauthorized();
+            }
+
+            if (String.IsNullOrEmpty(updatePasswordDto.CurrentPassword) || String.IsNullOrEmpty(updatePasswordDto.Password))
+            {
+                return BadRequest(new { error = "Old password and new password is needed." });
+            }
+
+            try
+            {
+                var user = await _userService.UpdatePassword(id, updatePasswordDto.CurrentPassword, updatePasswordDto.Password);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
             return NoContent();
         }
     }
