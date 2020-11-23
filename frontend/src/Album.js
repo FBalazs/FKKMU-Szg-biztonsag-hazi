@@ -38,67 +38,65 @@ const useStyles = theme => ({
   cardContent: {
     flexGrow: 1,
   },
+  cardActions: {
+    display: "flex",
+    justifyContent: "space-between"
+  }
 });
 
-const role= "admin"
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 //array amiben object van
 //[{title: title, animations: animations},{title: title, animations: animations}]
 
- const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjIiLCJyb2xlIjoiQ3VzdG9tZXIiLCJuYmYiOjE2MDYxNTAxOTcsImV4cCI6MTYwNjc1NDk5NywiaWF0IjoxNjA2MTUwMTk3fQ.tEnr30UCEguUO2ALOAiHHRHr0R7TFfIlxCYqvdOCNoI"
- 
+const requestOptions = {
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: 'Bearer ' + sessionStorage.getItem("token"),
+  },
+};
+
+const testData = [
+      {id:"0", title:"Test1", url:"https://localhost:8080/images/1.webp"},
+      {id:"1", title:"Test2", url:"https://localhost:8080/images/2.webp"},
+      {id:"2", title:"Test3", url:"https://localhost:8080/images/3.webp"},
+      {id:"3", title:"Test4", url:"https://localhost:8080/images/1.webp"},
+      {id:"4", title:"Test5", url:"https://localhost:8080/images/1.webp"}
+];
 
 class Album extends React.Component {
  
   constructor(props) {
     super(props);
+    
     this.state = {
-      animations: []
+      // animations: []
+      animations: testData
     };
+
+    
+    // this.getAnimations();
   }
 
-  componentDidMount(){
-    const requestOptions = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-    };   
+  getAnimations(){
+    console.log("download")
+    requestOptions['method'] = "GET"
     fetch("https://localhost:8080/api/animations/", requestOptions)
     .then(response => {
-         response.json().then(data =>{this.setState({animations:data}); console.log(this.state.animations)}) 
+         response.json().then(data =>{this.setState({animations:data}); console.log(data)}) 
     });
+
   }
-  deletehandler(id){
-    const requestOptions = {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-    };
-    console.log(id)
+
+  deleteHandler(id){
+    requestOptions['method'] = "DELETE"
+    console.log("delete", id)
+    var newArray = this.state.animations.filter(function (obj) {
+      return obj.id !== id;
+    });
+    this.setState({animations: newArray});
     //fetch("https://localhost:8080/api/animations/"+id, requestOptions)
     //.then(response => { console.log(response) });
-
   }
 
-
-  downloadHandler(){
-    const requestOptions = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-    };
-    fetch("https://localhost:8080/api/animations/", requestOptions)
-    .then(response => {
-         response.json().then(data =>{this.setState({animations:data}); console.log(this.state.animations)}) 
-    });
-
-  }
 
   render(){
     const { classes } = this.props;
@@ -120,33 +118,30 @@ class Album extends React.Component {
           <Container className={classes.cardGrid} maxWidth="md">
             {/* End hero unit */}
             <Grid container spacing={4}>
-              {cards.map((card) => (
-                <Grid item key={card} xs={12} sm={6} md={4} lg={3}>
+              {this.state.animations.map((animation) => (
+                <Grid item key={animation.id} xs={12} sm={6} md={4} >
                   <Card className={classes.card}>
                     <CardMedia
                       className={classes.cardMedia}
-                      image={this.state.animations[0]}
+                      image={animation.url}
                       title="Image title"
                     />
                     <CardContent className={classes.cardContent}>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        Heading
+                      <Typography  variant="h5" component="h2">
+                        {animation.title}
                       </Typography>
-                      {/* <Typography>
-                        This is a media card. You can use this section to describe the content.
-                      </Typography> */}
                     </CardContent>
-                    <CardActions>
-                      <Button size="small" color="primary" href={"/album/" + card}>
+                    <CardActions className={classes.cardActions}>
+                      <Button size="small" color="primary" href={"/album/" + animation.id}>
                         View
                       </Button>
-                      <Button size="small" color="primary" href="#" onClick={this.downloadHandler}>
+                      <Button size="small" color="primary"  href={animation.url} target="_blank" download>
                         Download
                       </Button>
-                      { role !="customer" &&
-                      <Button size="small" color="primary" href="#" onClick={this.deletehandler(card)} >
-                        Delete
-                      </Button>
+                      { sessionStorage.getItem("role") === "Admin" &&
+                        <Button size="small" color="primary" onClick={ () => this.deleteHandler(animation.id) } >
+                          Delete
+                        </Button>
                       }
                     </CardActions>
                   </Card>
