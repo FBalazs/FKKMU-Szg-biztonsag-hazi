@@ -62,14 +62,15 @@ class SignIn extends React.Component {
     fetch('https://localhost:8080/api/users/login', requestOptions)
       .then(response => {
         if (response.status===200){
-          
+
           response.json().then(data =>{ 
               sessionStorage.setItem("token", data.token);
               sessionStorage.setItem("role", data.role);
               sessionStorage.setItem("email", data.email);
+              window.location = "/album";
           })
       
-          window.location = "/album";
+          
         } 
         else {
           window.location = "/"
