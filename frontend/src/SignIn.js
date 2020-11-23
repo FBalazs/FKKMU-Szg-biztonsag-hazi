@@ -9,6 +9,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import {Context} from './Store'
 
 
 const useStyles = theme => ({
@@ -31,6 +32,8 @@ const useStyles = theme => ({
   },
 });
 
+
+
 class SignIn extends React.Component {
   constructor(props) {
     super(props);
@@ -47,8 +50,6 @@ class SignIn extends React.Component {
       [event.target.name]: event.target.value
     });
   }
-
-  
 
   handleSubmit(event) {
     const requestOptions = {

@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+  
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 //array amiben object van
 //[{title: title, animations: animations},{title: title, animations: animations}]
@@ -56,30 +57,25 @@ export default function Album() {
   
 
   const [state, setState] = useState({
-    animations : null
+    animations : [],
     
   });
 
-  
-    //event.preventDefault();
-    const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjIiLCJyb2xlIjoiQ3VzdG9tZXIiLCJuYmYiOjE2MDYwNjUxNDksImV4cCI6MTYwNjY2OTk0OSwiaWF0IjoxNjA2MDY1MTQ5fQ.pgTyKQEBCUZkd5xBTTAyjD6gJuwgz2nmC-_dk148bIA"
-    const requestOptions = {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + token,
-      },
-    };
+  const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjIiLCJyb2xlIjoiQ3VzdG9tZXIiLCJuYmYiOjE2MDYxNDc2MzcsImV4cCI6MTYwNjc1MjQzNywiaWF0IjoxNjA2MTQ3NjM3fQ.6RyB9GwJZrYFevLk68Zcz1ISnccuCyI19JVN21yTw5k"
+  const requestOptions = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+    },
+  };
 
-    fetch("https://localhost:8080/api/animations/", requestOptions)
-    .then(response => {
-        response.json().then(data =>{setState({animations:data}); }) 
-    });
+  fetch("https://localhost:8080/api/animations/", requestOptions)
+  .then(response => {
+      response.json().then(data =>{setState({animations : data}); }) 
+  });
 
-    console.log(state.animations[0])
-
-  
-
+  console.log(state.animations[0])
   
   return (
     <React.Fragment >
@@ -103,6 +99,7 @@ export default function Album() {
               <Grid item key={card} xs={12} sm={6} md={4} lg={3}>
                 <Card className={classes.card}>
                   <CardMedia
+                    
                     className={classes.cardMedia}
                     image={state.animations[0]}
                     title="Image title"
