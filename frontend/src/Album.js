@@ -11,6 +11,8 @@ import Container from '@material-ui/core/Container';
 import Footer from './Footer';
 import Navbar from './Navbar';
 import { withStyles } from '@material-ui/core/styles';
+import GetApp from '@material-ui/icons/GetApp';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = theme => ({
   icon: {
@@ -26,6 +28,7 @@ const useStyles = theme => ({
   cardGrid: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),
+    maxWidth: "100%"
   },
   card: {
     height: '100%',
@@ -119,7 +122,7 @@ class Album extends React.Component {
             {/* End hero unit */}
             <Grid container spacing={4}>
               {this.state.animations.map((animation) => (
-                <Grid item key={animation.id} xs={12} sm={6} md={4} >
+                <Grid item key={animation.id} xs={12} sm={6} md={4} lg={3}>
                   <Card className={classes.card}>
                     <CardMedia
                       className={classes.cardMedia}
@@ -132,14 +135,14 @@ class Album extends React.Component {
                       </Typography>
                     </CardContent>
                     <CardActions className={classes.cardActions}>
-                      <Button size="small" color="primary" href={"/album/" + animation.id}>
+                      <Button size="small" color="primary" variant="outlined" href={"/album/" + animation.id}>
                         View
                       </Button>
-                      <Button size="small" color="primary"  href={animation.url} target="_blank" download>
+                      <Button size="small" color="primary"  startIcon={<GetApp />} variant="contained" href={animation.url} target="_blank" download>
                         Download
                       </Button>
                       { sessionStorage.getItem("role") === "Admin" &&
-                        <Button size="small" color="primary" onClick={ () => this.deleteHandler(animation.id) } >
+                        <Button size="small" color="secondary" startIcon={<DeleteIcon />} variant="contained"  onClick={ () => this.deleteHandler(animation.id) } >
                           Delete
                         </Button>
                       }
