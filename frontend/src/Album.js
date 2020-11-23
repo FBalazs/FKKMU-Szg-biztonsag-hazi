@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-  
+const role= "customer"
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 //array amiben object van
 //[{title: title, animations: animations},{title: title, animations: animations}]
@@ -76,6 +76,7 @@ export default function Album() {
   });
 
   console.log(state.animations[0])
+
   
   return (
     <React.Fragment >
@@ -113,12 +114,18 @@ export default function Album() {
                     </Typography> */}
                   </CardContent>
                   <CardActions>
-                      <Button size="small" color="primary" href={"/album/" + card}>
+                    <Button size="small" color="primary" href={"/album/" + card}>
                         View
-                      </Button>
+                    </Button>
                     <Button size="small" color="primary" href="#">
                       Download
                     </Button>
+                    { role !="customer" &&
+                    <Button size="small" color="primary" href="#" >
+                      Delete
+                    </Button>
+                    }
+                    
                   </CardActions>
                 </Card>
               </Grid>
