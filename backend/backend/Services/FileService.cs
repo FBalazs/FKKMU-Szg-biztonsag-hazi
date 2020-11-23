@@ -57,6 +57,7 @@ namespace backend.Services
             if ( result != null)
             {
                 System.IO.File.Delete(result.FileUrl);
+                System.IO.File.Delete(webpFilesRootPath + result.Name + @".webp");
                 _repository.Delete<File>(result);
             }
 
