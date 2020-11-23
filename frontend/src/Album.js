@@ -40,19 +40,13 @@ const useStyles = theme => ({
   },
 });
 
-const role= "customer"
+const role= "admin"
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 //array amiben object van
 //[{title: title, animations: animations},{title: title, animations: animations}]
 
  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjIiLCJyb2xlIjoiQ3VzdG9tZXIiLCJuYmYiOjE2MDYxNTAxOTcsImV4cCI6MTYwNjc1NDk5NywiaWF0IjoxNjA2MTUwMTk3fQ.tEnr30UCEguUO2ALOAiHHRHr0R7TFfIlxCYqvdOCNoI"
- const requestOptions = {
-   method: 'GET',
-   headers: {
-     'Content-Type': 'application/json',
-     Authorization: 'Bearer ' + token,
-   },
- };
+ 
 
 class Album extends React.Component {
  
@@ -64,10 +58,46 @@ class Album extends React.Component {
   }
 
   componentDidMount(){
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+    };   
     fetch("https://localhost:8080/api/animations/", requestOptions)
     .then(response => {
          response.json().then(data =>{this.setState({animations:data}); console.log(this.state.animations)}) 
     });
+  }
+  deletehandler(id){
+    const requestOptions = {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    console.log(id)
+    //fetch("https://localhost:8080/api/animations/"+id, requestOptions)
+    //.then(response => { console.log(response) });
+
+  }
+
+
+  downloadHandler(){
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    fetch("https://localhost:8080/api/animations/", requestOptions)
+    .then(response => {
+         response.json().then(data =>{this.setState({animations:data}); console.log(this.state.animations)}) 
+    });
+
   }
 
   render(){
@@ -107,14 +137,14 @@ class Album extends React.Component {
                       </Typography> */}
                     </CardContent>
                     <CardActions>
-                        <Button size="small" color="primary" href={"/album/" + card}>
-                          View
-                        </Button>
-                      <Button size="small" color="primary" href="#">
+                      <Button size="small" color="primary" href={"/album/" + card}>
+                        View
+                      </Button>
+                      <Button size="small" color="primary" href="#" onClick={this.downloadHandler}>
                         Download
                       </Button>
                       { role !="customer" &&
-                      <Button size="small" color="primary" href="#" >
+                      <Button size="small" color="primary" href="#" onClick={this.deletehandler(card)} >
                         Delete
                       </Button>
                       }
