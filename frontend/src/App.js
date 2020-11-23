@@ -4,10 +4,12 @@ import SignUp from './SignUp';
 import { Route, Switch } from "react-router-dom";
 import Album from './Album';
 import Item from './Item';
+import Store from './Store';
 
 
 function App() {
   return (
+    <Store>
     <div className="App">
       <Switch>
         <Route exact path="/"><SignIn /></Route>
@@ -17,6 +19,7 @@ function App() {
       </Switch>
       
     </div>
+    </Store>
   );
 }
 
