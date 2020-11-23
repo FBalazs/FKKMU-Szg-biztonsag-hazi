@@ -9,7 +9,6 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import {Context} from './Store'
 
 
 const useStyles = theme => ({
@@ -63,8 +62,14 @@ class SignIn extends React.Component {
     fetch('https://localhost:8080/api/users/login', requestOptions)
       .then(response => {
         if (response.status===200){
+          
+          response.json().then(data =>{ 
+              sessionStorage.setItem("token", data.token);
+              sessionStorage.setItem("role", data.role);
+              sessionStorage.setItem("email", data.email);
+          })
+      
           window.location = "/album";
-          response.json().then(data =>{ console.log(data.token) })
         } 
         else {
           window.location = "/"

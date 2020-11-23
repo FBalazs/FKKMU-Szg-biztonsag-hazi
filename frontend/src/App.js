@@ -4,22 +4,22 @@ import SignUp from './SignUp';
 import { Route, Switch } from "react-router-dom";
 import Album from './Album';
 import Item from './Item';
-import Store from './Store';
+import PrivateRoute from "./PrivateRoute"
 
 
 function App() {
+ 
+
   return (
-    <Store>
     <div className="App">
       <Switch>
-        <Route exact path="/"><SignIn /></Route>
-        <Route path="/SignUp"><SignUp /></Route>
-          <Route path="/Album/:itemid" component={Item} />
-          <Route path="/Album" component={Album} />
+        <Route exact path="/" component={SignIn}></Route>
+        <Route path="/SignUp" component={SignUp}></Route>
+        <PrivateRoute path="/Album/:itemid" component={Item}/>
+        <PrivateRoute path="/Album" component={Album} />
+        <Route>404 Page not found</Route>
       </Switch>
-      
     </div>
-    </Store>
   );
 }
 
