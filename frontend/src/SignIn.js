@@ -67,6 +67,7 @@ class SignIn extends React.Component {
               sessionStorage.setItem("token", data.token);
               sessionStorage.setItem("role", data.role);
               sessionStorage.setItem("email", data.email);
+              sessionStorage.setItem("userid", data.id);
               window.location = "/album";
           })
       
