@@ -2,7 +2,6 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
@@ -11,6 +10,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Footer from './Footer';
 import Navbar from './Navbar';
+import Comments from './Comments'
 
 const useStyles = theme => ({
   icon: {
@@ -49,7 +49,27 @@ class Item extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log(this.props.match)
+    this.state = {
+      animation: {"id": 1, title:"Test title", url:"https://localhost:8080/images/1.webp"}//null
+    };
+    
+      // const animid = props.match.params.itemid
+      // fetch("https://localhost:8080/api/animations/"+animid, {
+      //   headers: {
+      //     Authorization: 'Bearer ' + sessionStorage.getItem("token"),
+      //   }
+      // })
+      // .then(response => {
+      //   if(response.status == "200"){
+      //     response.json().then(data => {
+      //       this.setState({
+      //         animation: data
+      //       });
+      //     })
+      //   }
+      //   console.log(response)
+      // });
+    
   }
 
   render(){
@@ -62,7 +82,7 @@ class Item extends React.Component {
         <div className={classes.heroContent}>
           <Container maxWidth="sm">
               <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-                <span dangerouslySetInnerHTML={{ __html: "Selected anim: " + this.props.match.params.itemid }}></span>
+                {this.state.animation.title}
             </Typography>
           </Container>
         </div>
@@ -73,16 +93,11 @@ class Item extends React.Component {
                 <Card >
                   <CardMedia
                     className={classes.cardMedia}
-                    image="https://source.unsplash.com/random"
-                    title="Image title"
+                    image={this.state.animation.url}
+                    title={this.state.animation.title}
                   />
-                  <CardContent className={classes.cardContent}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      Heading
-                    </Typography>
-                  </CardContent>
                   <CardActions>
-                    <Button size="small" color="primary" href="#">
+                    <Button size="small" color="primary" href="#" variant="contained">
                       Download
                     </Button>
                   </CardActions>
@@ -90,6 +105,8 @@ class Item extends React.Component {
               </Grid>
           </Grid>
         </Container>
+        <Comments/>
+
       </main>
       <Footer />
     </React.Fragment>
