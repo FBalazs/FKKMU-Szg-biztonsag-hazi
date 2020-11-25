@@ -73,14 +73,12 @@ class Album extends React.Component {
     this.state = {
       // animations: []
       animations: testData
-    };
-
-    
+    };  
     // this.getAnimations();
   }
 
   getAnimations(){
-    console.log("download")
+    
     requestOptions['method'] = "GET"
     fetch("https://localhost:8080/api/animations/", requestOptions)
     .then(response => {

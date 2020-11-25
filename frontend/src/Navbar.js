@@ -17,8 +17,10 @@ class NavBar extends React.Component {
                     
                     <Box display='flex' flexGrow={1}>
                         <Box mr={2}><Button  color="inherit" variant="outlined" href="/Album">Home </Button></Box>
-                        <UploadDialog />
+                        <UploadDialog />    
                     </Box>
+                    {sessionStorage.getItem("role") === "Admin" &&
+                    <Box mr={2}><Button  color="inherit" variant="outlined" href="/Users">Users </Button></Box>}
                     <Button color="inherit" variant="outlined" onClick={this.logout}>Log Out </Button>
                     
                 </Toolbar>
