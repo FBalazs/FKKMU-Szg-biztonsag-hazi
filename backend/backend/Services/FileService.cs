@@ -1,5 +1,6 @@
 ﻿using backend.Entities;
 using backend.Interfaces;
+using backend.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,10 +21,10 @@ namespace backend.Services
             this._repository = repository;
         }
 
-        public List<string> GetAll()
+        public List<animationDto> GetAll()
         {
             var result = _repository.GetAll<File>().ToList();
-            List<string> files = new List<string>();
+            List<animationDto> files = new List<animationDto>();
 
             foreach (File file in result)
             {
@@ -44,7 +45,12 @@ namespace backend.Services
                     process.WaitForExit();
                 }
 
-                files.Add(@"https://localhost:8080/images/" + file.Name + @".webp");
+                animationDto f = new animationDto();
+                f.id = file.Id.ToString();
+                f.title = file.Name;
+                f.url = @"https://localhost:8080/images/" + file.Name + @".webp";
+
+                files.Add(f);
             }
 
             return files;

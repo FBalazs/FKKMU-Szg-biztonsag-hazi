@@ -1,4 +1,5 @@
 ﻿using backend.Entities;
+using backend.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace backend.Interfaces
 {
     public interface IFileService
     {
-        public List<string> GetAll();
+        public List<animationDto> GetAll();
 
         public Task<int> UploadFile(byte[] file);
 
