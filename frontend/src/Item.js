@@ -53,7 +53,8 @@ class Item extends React.Component {
       animation: {"id": 1, title:"Test title", url:"https://localhost:8080/images/1.webp"}//null
     };
     
-      // const animid = props.match.params.itemid
+       this.animid = props.match.params.itemid
+       
       // fetch("https://localhost:8080/api/animations/"+animid, {
       //   headers: {
       //     Authorization: 'Bearer ' + sessionStorage.getItem("token"),
@@ -96,16 +97,11 @@ class Item extends React.Component {
                     image={this.state.animation.url}
                     title={this.state.animation.title}
                   />
-                  <CardActions>
-                    <Button size="small" color="primary" href="#" variant="contained">
-                      Download
-                    </Button>
-                  </CardActions>
                 </Card>
               </Grid>
           </Grid>
         </Container>
-        <Comments/>
+        <Comments anim_id={this.animid}/>
 
       </main>
       <Footer />

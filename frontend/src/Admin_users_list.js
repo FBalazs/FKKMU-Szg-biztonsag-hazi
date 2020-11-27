@@ -33,17 +33,18 @@ class Users extends React.Component {
         
         this.state = {
           role : null,
-          users: [{id: 1,name:"Sanyi",role:"GOD"},{id: 2,name:"Béla",role:"PEASANT"}],
+          //users: [{id: 1,name:"Sanyi",role:"GOD"},{id: 2,name:"Béla",role:"PEASANT"}],
+          users: [],
           
         }; 
-        // this.getUsers(); 
+        this.getUsers(); 
     }
     getUsers(){
         console.log("download")
         requestOptions['method'] = "GET"
         fetch("https://localhost:8080/api/users/", requestOptions)
         .then(response => {
-                response.json().then(data =>{this.setState({animations:data}); console.log(data)}) 
+                response.json().then(data =>{this.setState({users:data}); console.log(data)}) 
         });
         }
         
@@ -68,12 +69,12 @@ class Users extends React.Component {
                             </TableRow>
                             </TableHead>
                             <TableBody>
-                            {this.state.users.map((user) => (
+                            {this.state.users.map((user,index) => (
                                 <TableRow key={user.id}>
                                     <TableCell component="th" scope="row">
                                         {user.id}
                                     </TableCell>
-                                    <TableCell >{user.name}</TableCell>
+                                    <TableCell >{user.email}</TableCell>
                                     <TableCell align="center">{user.role}</TableCell>
                                     <TableCell align="center"><Box><Custombutton></Custombutton> </Box> </TableCell>
                                 </TableRow>

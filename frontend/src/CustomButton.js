@@ -26,7 +26,7 @@ const requestOptions = {
 export default function CustomButton() {
     const classes = useStyles();
     const [role, setRole] = React.useState('');
-    const [user_roles, setUserRoles] = React.useState(["GOD","PEASANT"]);
+    const [user_roles, setUserRoles] = React.useState(["ADMIN","CUSTOMER"]);
 
 
     const getRoles = () => {
@@ -50,7 +50,7 @@ export default function CustomButton() {
             body: JSON.stringify({role: this.state.role})       
           };
     
-          fetch('https://localhost:8080/api/user/role', requestOptions)
+          fetch('https://localhost:8080/api/users/{id}', requestOptions)
             .then(response => {
                 if (response.status===200){
                   response.json().then(data =>{ console.log(data) })

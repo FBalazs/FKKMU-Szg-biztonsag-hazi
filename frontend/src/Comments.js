@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import Box from '@material-ui/core/Box';
@@ -48,6 +48,14 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+const requestOptions = {
+    
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + sessionStorage.getItem("token"),
+    },
+  };
+
 const testData = [
     {"id": 1, "email": "igen@gmail.com", "text":"Rohadt jo ez a kep"},
     {"id": 2, "email": "nem@gmail.com", "text":"Tenyleg szar"},
@@ -55,39 +63,65 @@ const testData = [
 ]
 
 
-function Comments() {
+function Comments(props) {
     const classes = useStyles();
-    const [comments, setComments] = React.useState(testData)//[]);
+    const [comments, setComments] = React.useState([]);
     const [newComment, setNewComment] = React.useState("");
+    
+
+    useEffect (() =>{
+        getComments()
+    },[]
+    );
+
+    const getComments = () =>{
+        
+        fetch('https://localhost:8080/api/comments/' + props.anim_id, requestOptions)
+        .then(response => { console.log(response);
+            response.json().then(data =>{setComments(data); console.log(data)}) 
+    });
+
+    }
 
     const deleteHandler = (id) => {
-        // requestOptions['method'] = "DELETE"
+        requestOptions['method'] = "DELETE"
         console.log("delete", id)
-        var newArray = comments.filter(function (obj) {
-        return obj.id !== id;
+        
+        fetch("https://localhost:8080/api/comments/" +id, requestOptions)
+        .then(response => { console.log(response); 
+            if (response.status===200){ 
+            var newArray = comments.filter(function (obj) {
+                return obj.id !== id;
+                });
+                setComments(newArray)}
         });
-        setComments(newArray)
-        //fetch("https://localhost:8080/api/comments/"+id, requestOptions)
-        //.then(response => { console.log(response) }
     }
 
     const sendComment = () => {
         console.log("send comment");
         console.log(newComment);
+        console.log(sessionStorage.getItem("userid"));
+        console.log(props.anim_id);
+
 
         fetch('https://localhost:8080/api/comments', {
                 method: 'POST',
-                body:  JSON.stringify({"CommentMessage": newComment ,"userid": sessionStorage.getItem("userid")}),
                 headers: {
+                    'Content-Type': 'application/json',
                     Authorization: 'Bearer ' + sessionStorage.getItem("token"),
-                }
+                },
+                body:  JSON.stringify({"CommentMessage": newComment ,"UserId": sessionStorage.getItem("userid"),"FileId":props.anim_id}),
             })
             .then(response => {
+                
                 console.log(response);
-                // if (response.status === 200) { refresh comments
-                // }
+                 if (response.status === 200) { 
+                    window.location.reload()
+                 }
             })
     }
+
+
 
     return (
     <Container className={classes.cardGrid} maxWidth="md">
@@ -112,16 +146,16 @@ function Comments() {
                 <Card className={classes.card}> 
                  <CardActions className={classes.cardActions}>
                     <Box fontWeight="fontWeightBold" align="left" >
-                        {comment.email}
+                        {comment.userId}
                     </Box>
-                    { sessionStorage.getItem("role") === "Customer" &&
+                    { sessionStorage.getItem("role") === "Admin" &&
                     <Button size="small" color="secondary" startIcon={<DeleteIcon />} variant="contained"  onClick={ () => deleteHandler(comment.id) } >
                         Delete
                     </Button>
                     }
                 </CardActions>
                 <CardContent className={classes.cardContent}>
-                   {comment.text}
+                   {comment.commentMessage}
                 </CardContent>
                
                 </Card>

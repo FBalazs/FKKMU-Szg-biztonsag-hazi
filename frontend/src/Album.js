@@ -57,13 +57,13 @@ const requestOptions = {
   },
 };
 
-const testData = [
-      {id:"0", title:"Test1", url:"https://localhost:8080/images/1.webp"},
-      {id:"1", title:"Test2", url:"https://localhost:8080/images/2.webp"},
-      {id:"2", title:"Test3", url:"https://localhost:8080/images/3.webp"},
-      {id:"3", title:"Test4", url:"https://localhost:8080/images/1.webp"},
-      {id:"4", title:"Test5", url:"https://localhost:8080/images/1.webp"}
-];
+//const testData = [
+//      {id:"1", title:"Test1", url:"https://localhost:8080/images/1.webp"},
+//      {id:"2", title:"Test2", url:"https://localhost:8080/images/2.webp"},
+//      {id:"3", title:"Test3", url:"https://localhost:8080/images/3.webp"},
+//      {id:"4", title:"Test4", url:"https://localhost:8080/images/1.webp"},
+//      {id:"5", title:"Test5", url:"https://localhost:8080/images/1.webp"}
+//];
 
 class Album extends React.Component {
  
@@ -71,10 +71,10 @@ class Album extends React.Component {
     super(props);
     
     this.state = {
-      // animations: []
-      animations: testData
+      animations: []
+     // animations: testData
     };  
-    // this.getAnimations();
+     this.getAnimations();
   }
 
   getAnimations(){
@@ -94,9 +94,30 @@ class Album extends React.Component {
       return obj.id !== id;
     });
     this.setState({animations: newArray});
-    //fetch("https://localhost:8080/api/animations/"+id, requestOptions)
-    //.then(response => { console.log(response) });
+    fetch("https://localhost:8080/api/animations/" + id, requestOptions)
+    .then(response => { console.log(response) });
   }
+
+  downloadHandler(id){
+
+    function saveByteArray(reportName, byte) {
+      var blob = new Blob([byte], {type: "application/caff"});
+      var link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      var fileName = reportName;
+      link.download = fileName;
+      link.click();
+  };
+    requestOptions['method'] = "GET"
+    console.log("download", id)
+    
+    fetch("https://localhost:8080/api/animations/"+ id, requestOptions)
+    .then(response => { response.json().then(data =>{console.log(data) 
+    saveByteArray(id + ".animation" + ".caff", data)})
+    });
+  }
+  
+
 
 
   render(){
@@ -136,7 +157,7 @@ class Album extends React.Component {
                       <Button size="small" color="primary" variant="outlined" href={"/album/" + animation.id}>
                         View
                       </Button>
-                      <Button size="small" color="primary"  startIcon={<GetApp />} variant="contained" href={animation.url} target="_blank" download>
+                      <Button size="small" color="primary"  startIcon={<GetApp />} variant="contained" onClick={() => this.downloadHandler(animation.id)}> 
                         Download
                       </Button>
                       { sessionStorage.getItem("role") === "Admin" &&

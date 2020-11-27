@@ -69,6 +69,11 @@ class SignIn extends React.Component {
               sessionStorage.setItem("email", data.email);
               sessionStorage.setItem("userid", data.id);
               window.location = "/album";
+              console.log(data.token);
+              //admin@webstore.com
+              //Jelszo: Asd123+
+
+
           })
       
           

@@ -26,20 +26,35 @@ export default function AlertDialogSlide() {
   };
 
    const handleChange = (file) => {
-    setFile(file)
+    let reader = new FileReader();
+    console.log(file); //I can see the file's info
+    reader.onload= () => {
+        var binary = '';
+        var bytes = new Uint8Array(reader.result);
+        var len = bytes.byteLength;
+        for (var i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        console.log(btoa(binary))
+        setFile(binary)
+      
+   
+    }
+    reader.readAsArrayBuffer(file)
+
    };
 
    const handleSubmit = (event) => {
-
-    const formData = new FormData()
-    formData.append('myFile', selectedFile)
-
+    
+    //console.log(selectedFile)
     fetch('https://localhost:8080/api/animations', {
         method: 'POST',
-        body: formData,
         headers: {
-            Authorization: 'Bearer ' + sessionStorage.getItem("token"),
-        }
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + sessionStorage.getItem("token"),
+        },
+        body: JSON.stringify({"fileBytes" : selectedFile}),
+        
     })
     .then(response => { 
         console.log(response); 
@@ -47,6 +62,10 @@ export default function AlertDialogSlide() {
             setOpen(false);
             window.location ="/album"
         }
+        //else{ 
+          //setOpen(false);
+          //window.location ="/album"
+        //}
     })
   
     event.preventDefault();
