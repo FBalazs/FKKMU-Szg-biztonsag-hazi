@@ -112,8 +112,8 @@ class Album extends React.Component {
     console.log("download", id)
     
     fetch("https://localhost:8080/api/animations/"+ id, requestOptions)
-    .then(response => { response.json().then(data =>{console.log(data) 
-    saveByteArray(id + ".animation" + ".caff", data)})
+    .then(response => { response.blob().then(data =>{saveByteArray(id + ".animation" + ".caff", data)})
+    
     });
   }
   

@@ -76,7 +76,7 @@ class Users extends React.Component {
                                     </TableCell>
                                     <TableCell >{user.email}</TableCell>
                                     <TableCell align="center">{user.role}</TableCell>
-                                    <TableCell align="center"><Box><Custombutton></Custombutton> </Box> </TableCell>
+                                    <TableCell align="center"><Box><Custombutton user_id={user.id}></Custombutton> </Box> </TableCell>
                                 </TableRow>
                             ))}
                             </TableBody>

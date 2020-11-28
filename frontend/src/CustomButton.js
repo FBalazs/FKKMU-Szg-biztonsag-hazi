@@ -23,10 +23,10 @@ const requestOptions = {
     },
   };
 
-export default function CustomButton() {
+export default function CustomButton(props) {
     const classes = useStyles();
     const [role, setRole] = React.useState('');
-    const [user_roles, setUserRoles] = React.useState(["ADMIN","CUSTOMER"]);
+    const [user_roles, setUserRoles] = React.useState(["Admin","Customer"]);
 
 
     const getRoles = () => {
@@ -47,12 +47,12 @@ export default function CustomButton() {
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({role: this.state.role})       
+            body: JSON.stringify({Role: event.target.value})       
           };
     
-          fetch('https://localhost:8080/api/users/{id}', requestOptions)
+          fetch('https://localhost:8080/api/users/' + props.user_id, requestOptions)
             .then(response => {
-                if (response.status===200){
+                if (response.status===204){
                   response.json().then(data =>{ console.log(data) })
                 } else {
                     console.log(response)
