@@ -9,8 +9,6 @@ namespace backend.Entities
     {
         public string Role { get; set; }
 
-        public ICollection<UserFile> Files { get; set; }
-
         public ICollection<Comment> Comments { get; set; }
 
         public User()

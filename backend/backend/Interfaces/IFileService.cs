@@ -1,5 +1,6 @@
 ﻿using backend.Entities;
 using backend.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace backend.Interfaces
     {
         public List<animationDto> GetAll();
 
-        public Task<int> UploadFile(byte[] file);
+        public Task<int> UploadFile(IFormFile file);
 
         public Task<byte[]> DownloadFile(int id);
 

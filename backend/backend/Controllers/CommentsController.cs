@@ -24,10 +24,10 @@ namespace backend.Controllers
         }
 
         [Authorize(Roles = Roles.Roles.Customer + "," + Roles.Roles.Admin)]
-        [HttpGet("{comment_id}")]
-        public IActionResult getAllComment(int comment_id)
+        [HttpGet("{animation_id}")]
+        public IActionResult getAllComment(int animation_id)
         {
-            var result = _commentService.GetAllComment(comment_id);
+            var result = _commentService.GetAllComment(animation_id);
 
             _logService.Logger(HttpContext.User.Identity.Name, "Összes komment lekérése", "Comment");
 
@@ -38,7 +38,10 @@ namespace backend.Controllers
         [HttpPost]
         public async Task<IActionResult> uploadComment([FromBody] Comment comment)
         {
-            await _commentService.SaveComment(comment);
+            if (comment.UserId.ToString() == HttpContext.User.Identity.Name)
+            {
+                await _commentService.SaveComment(comment);
+            }
 
             _logService.Logger(HttpContext.User.Identity.Name, "Új komment", "Comment", comment.Id.ToString());
 

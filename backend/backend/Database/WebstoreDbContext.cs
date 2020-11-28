@@ -14,8 +14,6 @@ namespace backend.Database
 
         public DbSet<Log> Logs { get; set; }
 
-        public DbSet<UserFile> UserFiles { get; set; }
-
         public WebstoreDbContext()
         {
 

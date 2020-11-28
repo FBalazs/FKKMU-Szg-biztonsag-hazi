@@ -1,6 +1,7 @@
 ﻿using backend.Entities;
 using backend.Interfaces;
 using backend.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -83,7 +84,7 @@ namespace backend.Services
             return null;
         }
 
-        public Task<int> UploadFile(byte[] file)
+        public Task<int> UploadFile(IFormFile file)
         {
             //random fájlnév generálás
             string fileName = Guid.NewGuid().ToString("n").Substring(0, 8);
@@ -95,13 +96,17 @@ namespace backend.Services
             file_record.FileUrl = path;
             file_record.Name = fileName;
             int id = _repository.GetAll<File>().Count() + 1;
-            file_record.Id = id;
             file_record.Created = DateTime.Now;
 
             _repository.Add<File>(file_record);
 
             //fájl mentése
-            System.IO.File.WriteAllBytes(path, file);
+            using (var memoryStream = new System.IO.MemoryStream())
+            {
+                file.CopyTo(memoryStream);
+                byte[] fileByte = memoryStream.ToArray();
+                System.IO.File.WriteAllBytes(path, fileByte);
+            }
 
             return Task.FromResult(id);
         }

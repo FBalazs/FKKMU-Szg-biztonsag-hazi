@@ -16,8 +16,6 @@ namespace backend.Entities
 
         public ICollection<Comment> Comments { get; set; }
 
-        public ICollection<UserFile> UserFiles { get; set; }
-
         public File()
         {
         }

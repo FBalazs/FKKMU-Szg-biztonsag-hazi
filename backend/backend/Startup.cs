@@ -44,7 +44,6 @@ namespace backend
             services.AddDbContext<WebstoreDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("WebstoreDbContext")));
 
             // Service
-            services.AddScoped<IWebstoreService, WebstoreService>();
             services.AddScoped<IDbRepository, DbRepository<WebstoreDbContext>>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IFileService, FileService>();

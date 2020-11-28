@@ -2,7 +2,7 @@
 using backend.Entities;
 
 namespace backend.Interfaces
-{
+{/*
     public interface IWebstoreService
     {
         //regisztrálás
@@ -25,5 +25,5 @@ namespace backend.Interfaces
 
         //komment törlése
 
-    }
+    }*/
 }
