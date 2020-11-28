@@ -5,6 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import { requestOptions } from './config';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -16,58 +17,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const requestOptions = {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + sessionStorage.getItem("token"),
-    },
-  };
-
 export default function CustomButton(props) {
     const classes = useStyles();
-    const [role, setRole] = React.useState('');
-    const [user_roles, setUserRoles] = React.useState(["Admin","Customer"]);
-
-
-    const getRoles = () => {
-        
-        requestOptions['method'] = "GET"
-        fetch("https://localhost:8080/api/roles/", requestOptions)
-        .then(response => {
-                response.json().then(data =>{setUserRoles(data); console.log(data)}) 
-        });
-        }
+    const [role, setRole] = React.useState(props.user_role);
+    const [user_roles, ] = React.useState(["Admin","Customer"]);
 
     const handleChange = (event) => {
 
         setRole(event.target.value);
 
-        const requestOptions = {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({Role: event.target.value})       
-          };
+         requestOptions['method'] = "PUT"
+         requestOptions['body'] = JSON.stringify({Role: event.target.value})  
     
-          fetch('https://localhost:8080/api/users/' + props.user_id, requestOptions)
-            .then(response => {
-                if (response.status===204){
-                  response.json().then(data =>{ console.log(data) })
-                } else {
-                    console.log(response)
-                  }
-            })
-                    //.then(data => {console.log(data)});
+        fetch('https://localhost:8080/api/users/' + props.user_id, requestOptions)
+          .then(response => {
+            if (response.status===204){
+                alert("Modified")
+              } else {
+                console.log(response)
+              }
+          })
           event.preventDefault();
     };
-
-   // requestOptions['method'] = "GET"
-   // fetch("https://localhost:8080/api/roles/", requestOptions)
-   // .then(response => {
-   //         response.json().then(data =>{setUserRoles(data); console.log(data)}) 
-   // });
-    
 
     return (
         <div>
@@ -82,7 +53,7 @@ export default function CustomButton(props) {
             >
             {user_roles.map((role2)=>
             (
-            <MenuItem value={role2}>{role2}</MenuItem>
+              <MenuItem key={role2} value={role2}>{role2}</MenuItem>
             ))}
             </Select>
         </FormControl>

@@ -10,6 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SendIcon from '@material-ui/icons/Send';
+import { requestOptions } from './config';
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -48,19 +49,6 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const requestOptions = {
-    
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + sessionStorage.getItem("token"),
-    },
-  };
-
-const testData = [
-    {"id": 1, "email": "igen@gmail.com", "text":"Rohadt jo ez a kep"},
-    {"id": 2, "email": "nem@gmail.com", "text":"Tenyleg szar"},
-    {"id": 3, "email": "3@gmail.com", "text":"Ennel csak a react jobb"}
-]
 
 
 function Comments(props) {
@@ -70,18 +58,12 @@ function Comments(props) {
     
 
     useEffect (() =>{
-        getComments()
-    },[]
-    );
-
-    const getComments = () =>{
-        
         fetch('https://localhost:8080/api/comments/' + props.anim_id, requestOptions)
         .then(response => { console.log(response);
-            response.json().then(data =>{setComments(data); console.log(data)}) 
-    });
-
-    }
+            response.json().then(data => { setComments(data); console.log(data) })
+        });
+    },[props.anim_id]
+    );
 
     const deleteHandler = (id) => {
         requestOptions['method'] = "DELETE"
@@ -102,7 +84,10 @@ function Comments(props) {
         console.log(newComment);
         console.log(sessionStorage.getItem("userid"));
         console.log(props.anim_id);
-
+        if(newComment === ""){
+            alert("Message cannot be empty")
+            return false;
+        }
 
         fetch('https://localhost:8080/api/comments', {
                 method: 'POST',

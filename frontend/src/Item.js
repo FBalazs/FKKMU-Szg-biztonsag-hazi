@@ -1,7 +1,5 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardMedia from '@material-ui/core/CardMedia';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
@@ -11,6 +9,7 @@ import Container from '@material-ui/core/Container';
 import Footer from './Footer';
 import Navbar from './Navbar';
 import Comments from './Comments'
+import { requestOptions } from './config';
 
 const useStyles = theme => ({
   icon: {
@@ -49,28 +48,22 @@ class Item extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      animation: {"id": 1, title:"Test title", url:"https://localhost:8080/images/1.webp"}//null
-    };
-    
-       this.animid = props.match.params.itemid
-       
-      // fetch("https://localhost:8080/api/animations/"+animid, {
-      //   headers: {
-      //     Authorization: 'Bearer ' + sessionStorage.getItem("token"),
-      //   }
-      // })
-      // .then(response => {
-      //   if(response.status == "200"){
-      //     response.json().then(data => {
-      //       this.setState({
-      //         animation: data
-      //       });
-      //     })
-      //   }
-      //   console.log(response)
-      // });
-    
+    this.animid = props.match.params.itemid
+
+    this.state = {"id": this.animid, title:"", url:""};
+   
+    requestOptions['method'] = "GET"
+    fetch("https://localhost:8080/api/animations/", requestOptions)
+      .then(response => {
+        response.json().then(data => {
+            data.forEach(element => {
+              if(element.id === this.animid){
+                this.setState({"id": this.animid, "title": element.title, "url": element.url})
+                return false
+              }
+            });
+          })
+      });
   }
 
   render(){
@@ -83,7 +76,7 @@ class Item extends React.Component {
         <div className={classes.heroContent}>
           <Container maxWidth="sm">
               <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-                {this.state.animation.title}
+                {this.state.title}
             </Typography>
           </Container>
         </div>
@@ -94,8 +87,9 @@ class Item extends React.Component {
                 <Card >
                   <CardMedia
                     className={classes.cardMedia}
-                    image={this.state.animation.url}
-                    title={this.state.animation.title}
+                    image={this.state.url}
+                    src="image"
+                    title={this.state.title}
                   />
                 </Card>
               </Grid>

@@ -5,6 +5,7 @@ import { Route, Switch } from "react-router-dom";
 import Album from './Album';
 import Item from './Item';
 import PrivateRoute from "./PrivateRoute"
+import AdminRoute from "./AdminRoute"
 import Users from "./Admin_users_list"
 
 
@@ -18,7 +19,7 @@ function App() {
         <Route path="/SignUp" component={SignUp}></Route>
         <PrivateRoute path="/Album/:itemid" component={Item}/>
         <PrivateRoute path="/Album" component={Album} />
-        <PrivateRoute path="/Users" component={Users} />
+        <AdminRoute path="/Users" component={Users} />
         <Route>404 Page not found</Route>
       </Switch>
     </div>

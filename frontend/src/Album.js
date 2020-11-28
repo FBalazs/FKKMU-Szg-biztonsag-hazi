@@ -13,6 +13,7 @@ import Navbar from './Navbar';
 import { withStyles } from '@material-ui/core/styles';
 import GetApp from '@material-ui/icons/GetApp';
 import DeleteIcon from '@material-ui/icons/Delete';
+import {requestOptions} from './config';
 
 const useStyles = theme => ({
   icon: {
@@ -47,23 +48,6 @@ const useStyles = theme => ({
   }
 });
 
-//array amiben object van
-//[{title: title, animations: animations},{title: title, animations: animations}]
-
-const requestOptions = {
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: 'Bearer ' + sessionStorage.getItem("token"),
-  },
-};
-
-//const testData = [
-//      {id:"1", title:"Test1", url:"https://localhost:8080/images/1.webp"},
-//      {id:"2", title:"Test2", url:"https://localhost:8080/images/2.webp"},
-//      {id:"3", title:"Test3", url:"https://localhost:8080/images/3.webp"},
-//      {id:"4", title:"Test4", url:"https://localhost:8080/images/1.webp"},
-//      {id:"5", title:"Test5", url:"https://localhost:8080/images/1.webp"}
-//];
 
 class Album extends React.Component {
  
@@ -72,19 +56,16 @@ class Album extends React.Component {
     
     this.state = {
       animations: []
-     // animations: testData
     };  
-     this.getAnimations();
+    this.getAnimations();
   }
 
   getAnimations(){
-    
     requestOptions['method'] = "GET"
     fetch("https://localhost:8080/api/animations/", requestOptions)
     .then(response => {
          response.json().then(data =>{this.setState({animations:data}); console.log(data)}) 
     });
-
   }
 
   deleteHandler(id){
@@ -98,9 +79,7 @@ class Album extends React.Component {
     .then(response => { console.log(response) });
   }
 
-  downloadHandler(id){
-
-    function saveByteArray(reportName, byte) {
+  saveByteArray(reportName, byte) {
       var blob = new Blob([byte], {type: "application/caff"});
       var link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
@@ -108,17 +87,13 @@ class Album extends React.Component {
       link.download = fileName;
       link.click();
   };
+
+  downloadHandler(id){
     requestOptions['method'] = "GET"
     console.log("download", id)
-    
     fetch("https://localhost:8080/api/animations/"+ id, requestOptions)
-    .then(response => { response.blob().then(data =>{saveByteArray(id + ".animation" + ".caff", data)})
-    
-    });
+    .then(response => { response.blob().then(data =>{this.saveByteArray(id + "_animation.caff", data)})});
   }
-  
-
-
 
   render(){
     const { classes } = this.props;

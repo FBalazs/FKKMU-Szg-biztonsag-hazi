@@ -12,19 +12,13 @@ import Typography from '@material-ui/core/Typography';
 import { Box } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import Custombutton from './CustomButton';
+import { requestOptions } from './config';
 
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
   },
 });
-
-const requestOptions = {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + sessionStorage.getItem("token"),
-    },
-  };
 
 class Users extends React.Component {
   
@@ -33,9 +27,7 @@ class Users extends React.Component {
         
         this.state = {
           role : null,
-          //users: [{id: 1,name:"Sanyi",role:"GOD"},{id: 2,name:"Béla",role:"PEASANT"}],
           users: [],
-          
         }; 
         this.getUsers(); 
     }
@@ -46,7 +38,7 @@ class Users extends React.Component {
         .then(response => {
                 response.json().then(data =>{this.setState({users:data}); console.log(data)}) 
         });
-        }
+    }
         
 
    
@@ -65,7 +57,7 @@ class Users extends React.Component {
                                 <TableCell>User_id</TableCell>
                                 <TableCell>User_name</TableCell>
                                 <TableCell align="center">Role</TableCell>
-                                <TableCell align="center">Change Role </TableCell>   
+                                {/* <TableCell align="center">Change Role </TableCell>    */}
                             </TableRow>
                             </TableHead>
                             <TableBody>
@@ -75,8 +67,8 @@ class Users extends React.Component {
                                         {user.id}
                                     </TableCell>
                                     <TableCell >{user.email}</TableCell>
-                                    <TableCell align="center">{user.role}</TableCell>
-                                    <TableCell align="center"><Box><Custombutton user_id={user.id}></Custombutton> </Box> </TableCell>
+                                    {/* <TableCell align="center">{user.role}</TableCell> */}
+                                    <TableCell align="center"><Box><Custombutton user_id={user.id} user_role={user.role}></Custombutton> </Box> </TableCell>
                                 </TableRow>
                             ))}
                             </TableBody>
